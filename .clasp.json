@@ -1,4 +1,4 @@
 {
-  "scriptId": "[ your google app script ID ]",
+  "scriptId": "[your google app script Id]",
   "rootDir": "./src"
 }
