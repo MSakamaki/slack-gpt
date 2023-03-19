@@ -22,9 +22,9 @@ jobs:
           DOT_CLASPRC: ${{ secrets.DOT_CLASPRC }}
       - name: Dev Push
         run: |
-          npx clasp setting  ${{ secrets.DEV_SCRIPT_ID }}
+          npx clasp setting scriptId ${{ secrets.DEV_SCRIPT_ID }}
           npx clasp push
       # - name: Prod Push
       #   run: |
-      #     npx clasp setting  ${{ secrets.PROD_SCRIPT_ID }}
+      #     npx clasp setting scriptId ${{ secrets.PROD_SCRIPT_ID }}
       #     npx clasp push
