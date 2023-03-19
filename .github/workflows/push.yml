@@ -1,0 +1,29 @@
+name: GAS Push
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node.js 18.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18.x"
+      - run: npm ci
+      - name: Decrypt .clasprc
+        run: echo "$DOT_CLASPRC" >> $HOME/.clasprc.json
+        env:
+          DOT_CLASPRC: ${{ secrets.DOT_CLASPRC }}
+      - name: Dev Push
+        run: |
+          npx clasp setting scriptId ${{ secrets.DEV_SCRIPT_ID }}
+          npx clasp push -f
+      - name: Prod Push
+        run: |
+          npx clasp setting scriptId ${{ secrets.PROD_SCRIPT_ID }}
+          npx clasp push -f
