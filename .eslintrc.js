@@ -40,5 +40,7 @@ module.exports = {
     SlackThreadResponse: true,
     BotMessage: true,
     UserMessage: true,
+    Choice: true,
+    GptResponse: true,
   },
 };

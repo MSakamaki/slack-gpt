@@ -112,3 +112,24 @@ interface ChildElementText {
   type: "text";
   text: string;
 }
+
+interface Choice {
+  message: {
+    content: string;
+  };
+  finish_reason: string;
+  index: number;
+}
+
+interface GptResponse {
+  id: string;
+  object: string;
+  created: number;
+  model: string;
+  usage: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
+  choices: Choice[];
+}

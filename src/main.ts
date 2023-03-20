@@ -56,6 +56,20 @@ function getThreadingQuestion(row: string[]): ChatGptMessage[] {
   return messages;
 }
 
+function isChatGptApiSuccess(row: string[], choices: GptResponse): boolean {
+  if ((choices?.choices?.length ?? 0) === 0) {
+    postSlackBot(
+      getChannel(row),
+      `ChatGPT APIでエラーが発生しました[${JSON.stringify(choices)}]`,
+      {
+        thread_ts: getTs(row),
+      }
+    );
+    return false;
+  }
+  return true;
+}
+
 function runEventTrigger(): void {
   const channels = getBeginChannels();
   const SPREADSHEET_ID =
@@ -75,21 +89,25 @@ function runEventTrigger(): void {
     beginData.forEach(({ row, index }) => {
       console.log("hasThread", hasThread(row));
       if (hasThread(row)) {
-        postSlackBot(
-          getChannel(row),
-          requestChatThreading([
-            SLACK_CHART_FORMAT,
-            ...getThreadingQuestion(row),
-          ]),
-          {
+        const choices = requestChatThreading([
+          SLACK_CHART_FORMAT,
+          ...getThreadingQuestion(row),
+        ]);
+
+        if (isChatGptApiSuccess(row, choices)) {
+          postSlackBot(getChannel(row), choices.choices[0].message.content, {
             thread_ts: getThreadTs(row),
-          }
-        );
+          });
+        }
       } else {
         const question = getQuestionText(row);
-        postSlackBot(getChannel(row), requestChatCompletion(question), {
-          thread_ts: getTs(row),
-        });
+        const choices = requestChatCompletion(question);
+
+        if (isChatGptApiSuccess(row, choices)) {
+          postSlackBot(getChannel(row), choices.choices[0].message.content, {
+            thread_ts: getTs(row),
+          });
+        }
       }
 
       sheet?.getRange(index + 1, 1).setValue(DONE_STATE);

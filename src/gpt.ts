@@ -1,4 +1,4 @@
-function requestChatCompletion(content): string {
+function requestChatCompletion(content): GptResponse {
   console.log(content);
   const OPEN_API_KEY = getScriptProperties("APIKEY");
   if (OPEN_API_KEY === null) {
@@ -29,11 +29,12 @@ function requestChatCompletion(content): string {
     UrlFetchApp.fetch(apiUrl, options).getContentText()
   );
 
-  console.log(response);
-  return response.choices[0].message.content as string;
+  console.log(JSON.stringify(response));
+  return response as GptResponse;
+  // return response.choices[0].message.content as string;
 }
 
-function requestChatThreading(messages: ChatGptMessage[]): string {
+function requestChatThreading(messages: ChatGptMessage[]): GptResponse {
   const OPEN_API_KEY = getScriptProperties("APIKEY");
   if (OPEN_API_KEY === null) {
     throw Error("OPEN_API_KEY empty !");
@@ -63,6 +64,7 @@ function requestChatThreading(messages: ChatGptMessage[]): string {
   const response = JSON.parse(
     UrlFetchApp.fetch(apiUrl, options).getContentText()
   );
-
-  return response.choices[0].message.content as string;
+  console.log(JSON.stringify(response));
+  return response as GptResponse;
+  // return response.choices[0].message.content as string;
 }
