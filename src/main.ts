@@ -94,7 +94,20 @@ function runEventTrigger(): void {
           ...getThreadingQuestion(row),
         ]);
 
-        if (isChatGptApiSuccess(row, choices)) {
+        const mgWord = getThreadingQuestion(row).reduce(
+          (p, msg) => expectNgWords(msg.content) ?? p,
+          null
+        );
+
+        if (mgWord !== null) {
+          postSlackBot(
+            getChannel(row),
+            `利用不可能な[${mgWord}]が発言に見つかりました。`,
+            {
+              thread_ts: getTs(row),
+            }
+          );
+        } else if (isChatGptApiSuccess(row, choices)) {
           postSlackBot(getChannel(row), choices.choices[0].message.content, {
             thread_ts: getThreadTs(row),
           });
@@ -102,8 +115,16 @@ function runEventTrigger(): void {
       } else {
         const question = getQuestionText(row);
         const choices = requestChatCompletion(question);
-
-        if (isChatGptApiSuccess(row, choices)) {
+        const mgWord = expectNgWords(question);
+        if (mgWord !== null) {
+          postSlackBot(
+            getChannel(row),
+            `利用不可能な[${mgWord}]が発言に見つかりました。`,
+            {
+              thread_ts: getTs(row),
+            }
+          );
+        } else if (isChatGptApiSuccess(row, choices)) {
           postSlackBot(getChannel(row), choices.choices[0].message.content, {
             thread_ts: getTs(row),
           });

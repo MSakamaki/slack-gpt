@@ -1,6 +1,8 @@
 # slack-gpt
 
-SlackAPI calling OpenGPT with GAS
+SlackAPI calling OpenGPT with [GAS](https://script.google.com/)
+
+[database is a spreadsheet](https://docs.google.com/spreadsheets/)
 
 ### script properties
 

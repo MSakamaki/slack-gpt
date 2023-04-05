@@ -15,6 +15,7 @@ module.exports = {
   },
   globals: {
     findText: true,
+    getNgWords: true,
     BEGIN_STATE: true,
     DONE_STATE: true,
     SLACK_CHART_FORMAT: true,

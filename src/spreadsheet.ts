@@ -30,6 +30,30 @@ function getBeginChannels(): string[] {
   return beginData.map(({ row }) => row[1]);
 }
 
+function expectNgWords(text: string): string | null {
+  const ngWords = getNgWords();
+  return (
+    Object.keys(ngWords).find((title) =>
+      new RegExp(`(${ngWords[title].join("|")})`).test(text)
+    ) ?? null
+  );
+}
+
+function getNgWords(): Record<string, string[]> {
+  const ss = SpreadsheetApp.openById(getScriptProperties("SPREADSHEET_ID"));
+  const sheet = ss.getSheetByName("NG_WORD");
+
+  if (sheet !== null) {
+    const allData: string[][] = sheet.getDataRange().getValues();
+    const ngwMap = allData.reduce<Record<string, string[]>>(
+      (p, [key, ...values]) => ({ ...p, [key]: values }),
+      {}
+    );
+    return ngwMap;
+  }
+  return {};
+}
+
 function getSlackEventSubscriptionRequest(
   row: string[]
 ): SlackEventSubscriptionRequest {
