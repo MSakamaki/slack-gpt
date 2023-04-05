@@ -32,9 +32,10 @@ function getBeginChannels(): string[] {
 
 function expectNgWords(text: string): string | null {
   const ngWords = getNgWords();
+  console.log('ngWords', JSON.stringify(ngWords));
   return (
     Object.keys(ngWords).find((title) =>
-      new RegExp(`(${ngWords[title].join("|")})`).test(text)
+      new RegExp(`(${ngWords[title].map(t => t.toUpperCase()).join("|")})`).test(text.toUpperCase())
     ) ?? null
   );
 }
